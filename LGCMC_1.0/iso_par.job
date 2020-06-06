@@ -1,0 +1,193 @@
+#!/bin/bash -l
+#PBS -j eo
+#PBS -r n
+#PBS -N test 
+#PBS -l nodes=32
+
+export NP=1
+export LGCMC=/users/arku/LGCMC_1.0/bin/lgcmc.x
+export SUPERCELL=/users/arku/LGCMC_1.0/supercell
+export LOGFILE=lgcmc.log
+
+cd $PBS_O_WORKDIR
+
+export PROCESSOR=`cat ${PBS_NODEFILE} | wc -l`
+export NUMNODES=`uniq ${PBS_NODEFILE} | wc -l`
+export NODENAMES=`uniq ${PBS_NODEFILE} | sort -r`
+let numcores=${PROCESSOR}/${NUMNODES}
+export GAS=GAS
+export DIR=P
+
+
+echo 'PROCESSOR= ' $PROCESSOR
+echo 'NUMNODES=  ' $NUMNODES
+echo 'NODENAMES= ' $NODENAMES
+echo 'numcores=  ' $numcores
+
+# Cutting the fugacity.dat files in segments
+
+ head -n 1 $GAS > headder
+ echo $NP > np
+
+export COUNTER=0
+for node in $NODENAMES
+  do
+  for i in `seq -w 1 $numcores`
+    do
+    let COUNTER=${COUNTER}+1
+    mkdir ${DIR}${COUNTER}_${node}.${i}
+    let ind1=1+${NP}*${COUNTER}-${NP}+2
+    let ind2=${NP}*${COUNTER}+2
+#    echo $ind1 $ind2
+    sed -n -e ${ind1},${ind2}p ${GAS} > data
+    cat headder np data > ${DIR}${COUNTER}_${node}.${i}/GAS
+    cp SIMULATION_CONTROL ${DIR}${COUNTER}_${node}.${i}/.
+
+    if [ -f ADS_FREE_EN ]; then
+       cp ADS_FREE_EN ${DIR}${COUNTER}_${node}.${i}/.
+    fi
+
+    if [ -f LAT_INT ]; then
+    cp LAT_INT ${DIR}${COUNTER}_${node}.${i}/.
+    fi
+
+    if [ -f CONSTRAINTS ]; then
+    cp CONSTRAINTS ${DIR}${COUNTER}_${node}.${i}/.
+    fi
+
+    if [ -f GAS_INT_A ]; then
+       cp GAS_INT_A ${DIR}${COUNTER}_${node}.${i}/.
+    fi
+
+    if [ -f GAS_INT_B ]; then
+       cp GAS_INT_B ${DIR}${COUNTER}_${node}.${i}/.
+    fi
+
+    done
+  done
+rm -rf headder np data
+
+
+# Submission of jobs
+export ENDSIG=0
+export COUNTER=0
+if [ "${NUMNODES}" -eq 1 ]
+ then
+  for i in `seq -w 1 $PROCESSOR`
+  do
+    let COUNTER=${COUNTER}+1
+    cd ${PBS_O_WORKDIR}/${DIR}${COUNTER}_${node}.${i}/
+  #  echo COUNTER is $COUNTER
+    END[${COUNTER}]=0
+    $LGCMC > $LOGFILE 2>&1 &
+  done
+else
+
+   for node in $NODENAMES
+   do
+     for i in `seq -w 1 $numcores`
+     do
+       let COUNTER=${COUNTER}+1
+       ssh $node "cd ${PBS_O_WORKDIR}/${DIR}${COUNTER}_${node}.${i}; $LGCMC > $LOGFILE 2>&1 &"
+     done
+   done
+
+   for i in `seq 1 $PROCESSOR`
+   do
+     END[${i}]=0
+   done  
+fi
+
+
+cd $PBS_O_WORKDIR
+
+while [ "${ENDSIG}" -eq 0  ]
+ do
+
+ export COUNTER=0
+ export ENDSIG=1
+ if [ "${NUMNODES}" -eq 1 ]
+ then
+  for i in `seq -w 1 $PROCESSOR`
+    do
+     let COUNTER=${COUNTER}+1
+#     echo  COUNTER is $COUNTER
+     ENDED=`grep -c "^ job finished in" ${DIR}${COUNTER}_${node}.${i}/lgcmc.log`
+     if [ "${ENDED}" -gt 0 ]; then  END[${COUNTER}]=1; fi
+#     echo ${END[${COUNTER}]}
+     let ENDSIG=${ENDSIG}*${END[${COUNTER}]}
+#     echo $ENDSIG
+   done
+ else
+
+   for node in $NODENAMES
+   do
+     for i in `seq -w 1 $numcores`
+     do
+       let COUNTER=${COUNTER}+1
+#     echo  COUNTER is $COUNTER
+       ENDED=`grep -c "^ job finished in" ${DIR}${COUNTER}_${node}.${i}/lgcmc.log`
+       if [ "${ENDED}" -gt 0 ]; then  END[${COUNTER}]=1; fi
+#     echo ${END[${COUNTER}]}
+       let ENDSIG=${ENDSIG}*${END[${COUNTER}]}
+#     echo $ENDSIG
+     done
+   done 
+ fi
+  sleep 10
+done
+
+# Collection of data (isotherms) from different folders
+
+NCOMP=`grep "N_component" SIMULATION_CONTROL | awk '{print $3}'`
+
+for i in `seq -w 1 $NCOMP`
+    do
+      COMP[${i}]=`grep Component-${i} SIMULATION_CONTROL | awk '{print $3}'`
+#      echo ${COMP[${i}]}
+    done
+
+
+#for i in `seq -w 1 $PROCESSOR`
+export COUNTER=0
+for node in $NODENAMES
+  do
+    for i in `seq -w 1 $numcores`
+     do
+       let COUNTER=${COUNTER}+1
+       if [ "${NCOMP}" -gt 1 ]; then
+              if [ "${COUNTER}" -eq 1 ]; then
+                 cat ${DIR}${COUNTER}_${node}.${i}/allP.dat > allP.dat.temp${COUNTER};
+              else
+                 cat ${DIR}${COUNTER}_${node}.${i}/allP.dat | sed 1,12d > allP.dat.temp${COUNTER}
+              fi
+       fi
+
+      for j in `seq -w 1 $NCOMP`
+        do
+          if [ "${COUNTER}" -eq 1 ]; then
+             cat ${DIR}${COUNTER}_${node}.${i}/allP_${COMP[${j}]}.dat > allP_${COMP[${j}]}_temp${COUNTER};
+          else
+             cat ${DIR}${COUNTER}_${node}.${i}/allP_${COMP[${j}]}.dat | sed 1,12d > allP_${COMP[${j}]}_temp${COUNTER};
+          fi
+       done
+     done
+  done
+
+  for i in `seq -w 1 $NCOMP`
+    do
+      cat allP_${COMP[${i}]}_temp? allP_${COMP[${i}]}_temp?? > allP_${COMP[${i}]}.dat
+      rm -rf allP_${COMP[${i}]}_temp*
+    done
+
+   if [ "${NCOMP}" -gt 1 ]; then
+                            cat allP.dat.temp? allP.dat.temp?? > allP.dat
+                            rm -rf allP.dat.temp*
+   fi
+
+# Changing the permissions
+find . -type f -exec chmod 644 {} \;
+
+mkdir RUN-FOLDERS
+mv ${DIR}* RUN-FOLDERS/
+$SUPERCELL

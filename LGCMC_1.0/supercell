@@ -1,0 +1,190 @@
+###########################################################
+#                This script is a part of                 #
+#                ╦    ╔═╗  ╔═╗  ╔╦╗  ╔═╗                  #
+#                ║    ║ ╦  ║    ║║║  ║                    #
+#                ╩═╝  ╚═╝  ╚═╝  ╩ ╩  ╚═╝                  #
+#       A Lattice Grand Canonical Monte Carlo Code        #
+#                Written by Arpan Kundu                   #
+#                        at                               #
+#            Humboldt University of Berlin                #
+###########################################################
+
+
+#!/bin/bash -l
+
+working_dir=`pwd`
+NCOMP=`grep "N_component" SIMULATION_CONTROL | awk '{print $3}'`
+
+for i in `seq -w 1 $NCOMP`
+   do
+     COMP[${i}]=`grep Component-${i} SIMULATION_CONTROL | awk '{print $3}'`
+   done
+
+
+
+  N_SITE_TYPE=`grep "N_site_type" SIMULATION_CONTROL | awk '{print $3}'`
+  let SITE_EQV_FLAG=0
+  for i in `seq -w 1 $N_SITE_TYPE`
+      do
+
+         name_string=`grep Site-${i} SIMULATION_CONTROL | awk '{print $3}'`
+         marker_index=`expr index "${name_string}" '*'`
+#         echo $marker_index
+         let name_len=${marker_index}-1
+#         echo $name_len
+         NAME[${i}]=`echo ${name_string:0:${name_len}}`
+#         echo "Site-name $name_string has marker at position ${marker_index} and its name is ${NAME[${i}]}"
+         if [ "${marker_index}" -gt 0 ]; then
+           let SITE_EQV_FLAG=1
+         fi
+      done
+
+  if [ "${SITE_EQV_FLAG}" -eq 0 ]; then
+     echo Equivalents sites are not found.
+     exit 
+  else
+     echo Equivalent sites are found. 
+     echo Results of the supercell script will be stored in files naming total_
+  fi
+
+  #counting the number of equivalent sites, name of equivalent sites will be stored in SITE and number of such sites will be stored on MULTIPLICITY
+  SITE[1]=${NAME[1]}
+  MULTIPLICITY[1]=0
+  export SITE_TOTAL=1
+
+  mkdir ${working_dir}/temp_dir  
+  #Separating columns for allP_component.dat
+
+  for i in `seq -w 1 $N_SITE_TYPE`
+    do
+      let col_no=${i}+2 
+      export read_flag=0
+      export j=1
+      while [ "${read_flag}" -ne 1 ]
+        do
+        if [ "${j}" -le ${SITE_TOTAL} ]; then
+           if [ "${NAME[${i}]}" = "${SITE[${j}]}" ]; then
+              SITE[${j}]=${NAME[${i}]}
+              let MULTIPLICITY[${j}]=${MULTIPLICITY[${j}]}+1
+              #separating raw data into files in temporary directory
+              for c in `seq -w 1 $NCOMP`
+               do
+                 tail -n +13 allP_${COMP[${c}]}.dat | awk -v x=$col_no '{printf "%20.10g\n", $x}' > ${working_dir}/temp_dir/${COMP[${c}]}_${SITE[${j}]}_${MULTIPLICITY[${j}]}.allpoint         
+               done
+              let read_flag=1
+           else
+            let  j=j+1
+           fi
+        else
+           let SITE_TOTAL=${SITE_TOTAL}+1
+           let MULTIPLICITY[${SITE_TOTAL}]=1
+           SITE[${SITE_TOTAL}]=${NAME[${i}]}
+           for c in `seq -w 1 $NCOMP`
+            do
+              tail -n +13 allP_${COMP[${c}]}.dat | awk -v x=$col_no '{printf "%20.10g\n", $x}' > ${working_dir}/temp_dir/${COMP[${c}]}_${SITE[${j}]}_${MULTIPLICITY[${j}]}.allpoint
+            done
+           let read_flag=1
+        fi
+        done
+   done
+
+  let last_col=${N_SITE_TYPE}+3
+  let unit=${MULTIPLICITY[1]}
+  echo unit=$unit
+  for c in `seq -w 1 $NCOMP`
+   do
+     if [ "${c}" -eq 1 ]; then
+     tail -n +13 allP_${COMP[${c}]}.dat | awk '{printf "%15.9f\n", $1}' > ${working_dir}/temp_dir/Pressure.allpoint
+     fi
+     tail -n +13 allP_${COMP[${c}]}.dat | awk '{printf "%15.9f\n", $2}' > ${working_dir}/temp_dir/Composition_comp-${c}.allpoint
+     tail -n +13 allP_${COMP[${c}]}.dat | awk -v x=$last_col -v y=$unit '{printf "%20.10g\n", $x/y}' > ${working_dir}/temp_dir/Total_comp-${c}.allpoint
+   done
+
+   #averaging over multiplicity
+   for j in `seq -w 1 $SITE_TOTAL` 
+    do
+       if [ "${MULTIPLICITY[${j}]}" -eq 1 ]; then
+          for c in `seq -w 1 $NCOMP`
+           do
+            mv temp_dir/${COMP[${c}]}_${SITE[${j}]}_${MULTIPLICITY[${j}]}.allpoint > ${working_dir}/temp_dir/${COMP[${c}]}_site-${j}.allpoint
+           done
+       else
+          for c in `seq -w 1 $NCOMP`
+           do
+            awk '{a[FNR]+=$1; b[FNR]++; c[FNR]+=$1*S1 }
+                END{
+                    for(i=1;i<=FNR;i++)
+                    printf "%20.10g\n", a[i]/b[i];
+                  }' temp_dir/${COMP[${c}]}_${SITE[${j}]}_*.allpoint > ${working_dir}/temp_dir/${COMP[${c}]}_site-${j}.allpoint
+           done
+       fi 
+    done
+
+  #header function for allP.component
+
+   
+   head -n 10 allP.dat > ${working_dir}/temp_dir/logo
+  
+
+   function header1 {
+   printf "#"
+   printf "%15s" " P(atm)    "
+   printf "%16s" " y_${COMP[$1]}    "
+   for j in `seq -w 1 $SITE_TOTAL`
+    do
+       printf "%21s" " theta_${SITE[${j}]}_${COMP[$1]}  "
+    done
+   printf "%25s\n" " theta_total_${COMP[$1]}/${SITE[1]}"
+   printf "%s\n"
+                    }
+
+
+   #changing directory to temp_dir
+   cd ${working_dir}/temp_dir
+   for c in `seq -w 1 $NCOMP`
+    do
+      header1 ${c} > ${COMP[${c}]}.header
+      paste -d ' ' Pressure.allpoint Composition_comp-${c}.allpoint ${COMP[${c}]}_site-*.allpoint Total_comp-${c}.allpoint  > ${COMP[${c}]}.alldata
+      cat logo ${COMP[${c}]}.header ${COMP[${c}]}.alldata > total_${COMP[${c}]}.dat
+    done
+
+   function header2 {
+   printf "#"
+   printf "%15s" " P(atm)    "
+   let comp_list=$1-1
+   for c in `seq -w 1 $comp_list`
+    do
+       printf "%16s" "   y_${COMP[${c}]}  "
+    done
+   for c in `seq -w 1 $1`
+    do
+       printf "%25s" "  theta_total_${COMP[${c}]}/${SITE[1]} "
+    done
+   printf "%s\n"
+   printf "%s\n"
+                    }
+   if [ "${NCOMP}" -gt 1 ]; then
+      header2 ${NCOMP} > Composition.header
+      rm -rf Composition_comp-${NCOMP}.allpoint
+      #picking data from allP.dat
+      paste Pressure.allpoint Composition_comp-*.allpoint Total_comp-*.allpoint > Composition.alldata
+      cat logo Composition.header Composition.alldata > total_all.dat
+   fi
+    
+  mkdir ${working_dir}/Supercell-average
+  mv  total*.dat ${working_dir}/Supercell-average
+  cd ${working_dir}
+  rm -rf ${working_dir}/temp_dir
+  
+
+#   echo SITE_TOTAL=${SITE_TOTAL}
+#   for j in `seq 1 ${SITE_TOTAL}`
+#       do
+#       echo There are ${MULTIPLICITY[${j}]} ${SITE[${j}]}"s"
+#       done
+
+
+
+
+           
+

@@ -1,6 +1,6 @@
 COMPILER = ifort
 OUTPUT := ./lgcmc.x
-FLAGS = -g  -check all -O0 -traceback 
+FLAGS = -g  -check all -O0 -traceback -warn none 
 SOURCE = derived_data_module logo_module variable cubic_eos_module read_input_files site_finder_module calc_ads_en calc_lat_int energy_calculation_module ran_num_gen gcmc_module
 EXECUTABLE = main
 

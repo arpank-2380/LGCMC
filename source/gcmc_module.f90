@@ -483,7 +483,7 @@
  IMPLICIT NONE
 
  TYPE KEX                        !Kawasaki Exchange
- SEQUENCE
+ !SEQUENCE
      INTEGER :: x,y,st            !xposition,yposition,site_type
      INTEGER :: init,final        !initial and final configuration
      DOUBLE PRECISION :: bf       ! Boltzman factor

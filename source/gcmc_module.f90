@@ -1060,7 +1060,7 @@ endif
  INTEGER :: ii,jj,kk                                      !general counters
  INTEGER :: imatch,idump                                 !counting number of match found
  LOGICAL :: match                                         ! true if match found
- LOGICAL :: nvirtual_anh                                  ! number of virtual_sites after annihilation
+ INTEGER :: nvirtual_anh                                  ! number of virtual_sites after annihilation
 
  idump=0
  nvirtual_anh=nvirtual

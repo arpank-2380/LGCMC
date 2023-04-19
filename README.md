@@ -42,7 +42,7 @@ on an isolated site $s$, and lateral interaction energies ($E_{s,s'}^{c,c'}$)
 of components $c$ and $c'$ adsorbed at sites $s$ and $s'$, respectively, 
 can be computed applying accurate quantum chemical methods. The occupancy number
 of the $c$-th species at the $s$-th site, $n_{s}^{c}$, is related to the 
-total occupancy vector, ${\bf $n_{s}}$, according to:
+total occupancy vector, ${\bf n_{s}}$, according to:
 
 ```math
 \sum_{c=A}^{K} n_{s}^{c} = n_{s},

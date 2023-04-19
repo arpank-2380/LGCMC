@@ -39,11 +39,11 @@ LGCMC generates samples configurations: $i=1,2,3,...,I$, using a grand canonical
 Monte Carlo simulation where chemical potential of each species is same in both gas and solid phase, *i.e.*, $\mu_{c}^{ads} = \mu_{c}^{gas}$. 
 The condition of materials equilibrium dictates that the gas phase chemical 
 potential, $\mu_{c}^{gas} = f(y,P,T)$, which is a thermodynamic function 
-of pressure $(P)$, temperature$(T)$, and gas phase composition$(y)$, 
-uniquely defines the adsorbed phase chemical potential. 
+of pressure $(P)$, temperature $(T)$, and gas phase composition $(y)$, 
+uniquely defines the adsorbed phase chemical potential as well. 
 The chemical potential can be computed employing a suitable equation of state or
 from the experimentally measured fugacity coefficients: 
-$\phi_{c}=e^{\frac{\mu_{c}}{RT)$ with $R$ denoting the universal gas constant.  
+$\phi_{c}=e^{\frac{\mu_{c}}{RT}$ with $R$ denoting the universal gas constant.  
 The following equation of states: (i) ideal, (ii) Van der Waals, (iii) Redlich-Kwong, (iv) Soave-Redlich-Kwong, (v) Peng-Robinson (with 1978 and 1980's 
 modifications), (vi) Peng-Robinson-Gasem equation of states are implemented. 
 It is also possible to supply the fugacity coefficients (if known from

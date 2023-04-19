@@ -9,7 +9,7 @@ Welcome to **LGCMC** - A FORTRAN package for Lattice Grand Canonical Monte Carlo
 LGCMC employs the Lattice-Gas Hamiltonian:
 
 ```math
- H(**n_{1},n_{2},...,n_{M}}**) = \sum_{s=1}^M\sum_{c=A}^K\Delta G_{s}^{c}n_{i}^{c} + 
+ H(**n_{1},n_{2},...,n_{M}**) = \sum_{s=1}^M\sum_{c=A}^K\Delta G_{s}^{c}n_{i}^{c} + 
  \frac{1}{2} \sum_{s \neq s'} \sum_{c,c'=A}^K E_{s,s'}^{c,c'} 
 n_{s}^{c}n_{s'}^{c'} + ... 
 ```

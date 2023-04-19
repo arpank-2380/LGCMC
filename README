@@ -1,7 +1,0 @@
-Requirements: Intel fortran compiler.
-To compile,
-(1) Change install.sh to an executable by chmod 755 install.sh.
-(2) Load intel fortran compiler by "module load <compiler version>".
-(3) Run install.sh using ./install.sh
-
-Manual is comming soon.

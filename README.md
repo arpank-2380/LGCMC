@@ -4,8 +4,9 @@
 
 Welcome to **LGCMC** - A FORTRAN package for Lattice Grand Canonical Monte Carlo Simulation for *ab initio* prediction of pure and mixed gas isotherms.
 
-## Introduction
+## Introduction to LGCMC
 
+### Grand Canonical Monte Carlo (GCMC) Simulation 
 A grand canonical Monte Carlo simulation simulates adsorption isotherms of pure 
 and mixture of gases within a porous material. 
 This approach imposes the condition of material equilibrium, i.e., the chemical 
@@ -25,6 +26,8 @@ this coarse-grained model. **LGCMC** performs such kind of GCMC simulations
 to simulate isotherms, treating adsorbate-adsorbate lateral interactions 
 explicitely, and thus avoids any approximations, 
 such as mean-field approximation, for isotherm calculations.     
+
+### Theoretical Background 
 
 LGCMC employs the Lattice-Gas model as a coarse-grained Hamiltonian:
 

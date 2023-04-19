@@ -9,14 +9,14 @@ Welcome to **LGCMC** - A FORTRAN package for Lattice Grand Canonical Monte Carlo
 LGCMC employs the Lattice-Gas Hamiltonian:
 
 ```math
- H(n_{1},n_{2},...,n_{M}) = \sum_{s=1}^S\sum_{c=A}^K\Delta G_{s}^{c}n_{i}^{c} + 
+ H(**n_{1},n_{2},...,n_{M}}**) = \sum_{s=1}^M\sum_{c=A}^K\Delta G_{s}^{c}n_{i}^{c} + 
  \frac{1}{2} \sum_{s \neq s'} \sum_{c,c'=A}^K E_{s,s'}^{c,c'} 
 n_{s}^{c}n_{s'}^{c'} + ... 
 ```
-to define the free energies of a multi-component system on a surface. 
+to define the free energies of a multi-component adsorption equilibria. 
 Here, $s,s'=1,2,...,M$ denote the indices of adsorption sites within the 
 simulation box, where $M$ is the maximum number of available sites. 
-The indices $c,c'=A,B,...,K$ represent the gas species of a multi-component 
+The indices $c,c'=A,B,...,K$ represent the gas species of a multi-component gas 
 mixture. The Gibbs free energy of adsorption $(G_{s}^{c})$ of component $c$ 
 on an isolated site $s$, and lateral interaction energies ($E_{s,s'}^{c,c'}$) 
 of components $c$ and $c'$ adsorbed at sites $s$ and $s'$, respectively, 
@@ -52,7 +52,7 @@ After generating $I$ configurations, the surface coverage of component $c$ is
 defined as:
 
 ```math
-\theta_{c}=\frac{\langle N_{c} \rangle}{M} = \frac{1}{MI}\sum_{i=1,I}N_{c,i} 
+\theta_{c}=\frac{\langle N_{c} \rangle}{M} = \frac{1}{MI}\sum_{i=1}^{I}N_{c,i} 
 ``` 
 
  

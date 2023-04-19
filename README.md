@@ -10,8 +10,8 @@ LGCMC employs the Lattice-Gas Hamiltonian:
 
 ```math
  H(n_{1},n_{2},...,n_{S}) = \sum_{s=1}^S\sum_{c=A}^K\Delta G_{s}^{c}n_{i}^{c} + 
- \frac{1}{2} \sum_{s\neqs'} \sum_{c,c'=A}^K E_{s,s'}^{c,c'} n_{s}^{c}n_{s'}^{c'}
- + ... 
+ \frac{1}{2} \sum_{s \neq s'} \sum_{c,c'=A}^K E_{s,s'}^{c,c'} 
+n_{s}^{c}n_{s'}^{c'} + ... 
 ```
 to define the free energies of a multi-component system on a surface. 
 Here, $s,s'=1,2,...,S$ denote the indices of adsorption sites within the 
@@ -24,7 +24,7 @@ can be computed applying accurate quantum chemical methods. The occupancy number
 of the $c$-th species at the $s$-th site, $n_{s}^{c}$, is related to the 
 total occupancy, $n_{s}$, according to:
 
-```math```
+```math
 \sum_{c=A}^{K} n_{s}^{c} = n_{s}.
 ```
 

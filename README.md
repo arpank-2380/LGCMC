@@ -36,10 +36,9 @@ The number of gas molecules of species $c$ at a specific configuration $i$ is:
 N_{c,i}=\sum_{s=1}^{M} n_{s}^{c}
 ``` 
 LGCMC generates samples configurations: $i=1,2,3,...,I$, using a grand canonical 
-Monte Carlo where chemical potential of each species is constant in both gas and 
-solid phase, *i.e.*, $\mu _{c}^{ads} = \mu _{c}^{gas}$. 
+Monte Carlo simulation where chemical potential of each species is same in both gas and solid phase, *i.e.*, $\mu_{c}^{ads} = \mu_{c}^{gas}$. 
 The condition of materials equilibrium dictates that the gas phase chemical 
-potential, $\mu _{c}^{gas} = f(y,P,T)$, which is a thermodynamic function 
+potential, $\mu_{c}^{gas} = f(y,P,T)$, which is a thermodynamic function 
 of pressure $(P)$, temperature$(T)$, and gas phase composition$(y)$, 
 uniquely defines the adsorbed phase chemical potential. 
 The chemical potential can be computed employing a suitable equation of state or

@@ -175,7 +175,7 @@ After installing it you can load it to the environment using
 source /installation/path/setvars.sh
 ```
 
-###LGCMC installation
+### LGCMC installation
 
 After loading/obtaining intel fortran compiler, install LGCMC as following
 

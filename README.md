@@ -190,4 +190,3 @@ After a successful installation you would see a message saying installation is s
 ## Tutorials & Manual
 Comming Soon
 
-Manual is comming soon.

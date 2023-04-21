@@ -27,7 +27,7 @@ this coarse-grained model. **LGCMC** performs such kind of GCMC simulations on a
 coarse-grained model to simulate pure and mixed gas adsorption isotherms. 
 In this way it is possible to treat adsorbate-adsorbate lateral interactions 
 explicitely, and thus, isotherm calculations can be performed avoiding 
-any approximations, such as mean-field approximation.     
+any approximations, such as mean-field approximation [R1-R3].     
 
 ### Theoretical Background 
 
@@ -40,8 +40,10 @@ n_{s}^{c}n_{s'}^{c'} + ...
 ```
 to define the adsorption free energies of a multi-component 
 adsorption equilibria. 
-Here, $s,s'=1,2,...,M$ denote the indices of adsorption sites within the 
-simulation box, where $M$ is the maximum number of available sites. 
+This Hamiltonian is also known as cluster expansion Hamiltonian and current 
+implementation of **LGCMC** truncates it after second order.  
+In the above equation, $s,s'=1,2,...,M$ denote the indices of adsorption sites 
+within the simulation box, where $M$ is the maximum number of available sites. 
 The indices $c,c'=A,B,...,K$ represent the gas species of a multi-component gas 
 mixture. The Gibbs free energy of adsorption $(G_{s}^{c})$ of component $c$ 
 on an isolated site $s$, and lateral interaction energies ($E_{s,s'}^{c,c'}$) 
@@ -81,16 +83,111 @@ defined as:
 ``` 
 **LGCMC** prints surface coverages $(\theta_{c})$ after completion of a simulation. 
 
-Please consult references [x] and [x] for more details. If you used LGCMC for 
- 
-### References
+### Citations
+Please consult reference C1 and Chapter-2 of reference C2 for more details. 
+If you used LGCMC for obtaining results, please acknowledge us by citing 
+the following references:
 
+[C1] Kundu, A; Sillar, K; Sauer, J. 
+*Ab Initio* Prediction of Adsorption Isotherms for Gas Mixtures 
+by Grand Canonical Monte Carlo Simulations on a Lattice of Sites. 
+*J. Phys. Chem. Lett.* **2017**, 8, 2713. 
+
+[C2] Kundu, A. 
+*Ab Initio* Prediction of Isotherms for Pure and Mixed Gas Adsorption in 
+Metal-Organic Frameworks.
+Humboldt-Universitat zu Berlin, Berlin, 2018.
+[DOI: 10.13140/RG.2.2.16512.58882]
+ 
+
+### References
+[R1] Kundu, A; Piccini, G; Sillar, K; Sauer, J.
+*Ab Initio* Prediction of Adsorption Isotherms for Small Molecules in 
+Metal-Organic Frameworks.
+*J. Am. Chem. Soc.* **2016**, 138, 14047.
+
+[R2] Sillar, K; Kundu, A; Sauer, J.
+*Ab Initio* Adsorption Isotherms for Molecules with Lateral Interactions: 
+CO2 in Metal–Organic Frameworks.
+*J. Phys. Chem. C* **2017**, 121, 12789
+
+[R3] Kundu, A; Sillar, K; Sauer, J.
+Predicting adsorption selectivities from pure gas isotherms for 
+gas mixtures in metal–organic frameworks.
+*Chem. Sci.* **2020**, 11, 643 (Featured in Front Cover).
+
+[R4]Sillar, K; Kundu, A; Sauer, J.
+Ab Initio Prediction of Adsorption Selectivities for Binary Gas Mixtures on a
+Heterogeneous Metal-Organic Framework Surface.
+*Submitted* **2023**.
 
 ## Installation
 **Requirements:** Intel fortran compiler.
-To compile,
-(1) Change install.sh to an executable by chmod 755 install.sh.
-(2) Load intel fortran compiler by "module load <compiler version>".
-(3) Run install.sh using ./install.sh
+
+### Loading/Obtaining intel FORTRAN compiler
+Intel fortran compiler is available with intel modules. 
+If you are using a HPC cluster please look for intel modules by using 
+the following command:
+```
+$module avail intel
+```
+This would show the all available intel modules.
+```
+----------------------------- /software/modulefiles2 -----------------------------
+intel/12.1    intel/19.0.1             intelmpi/2017.up4+intel-17.0      
+intel/15.0    intel/19.0.4             intelmpi/2018.2.199+intel-18.0    
+intel/16.0    intel/19.1.1             intelmpi/2018.4.274+intel-18.0.5  
+intel/17.0    intelmpi/4.0+intel-12.1  intelmpi/2019.up7+intel-19.1.1    
+intel/18.0    intelmpi/5.0+intel-15.0  IntelPython2/2018.1.023           
+intel/18.0.5  intelmpi/5.1+intel-16.0  IntelPython3/2018.1.023 
+```
+
+Then load any intel module; we do not need intelmpi modules as **LGCMC** is a single processor code.
+
+```
+$module load intel/12.1
+```
+
+If your system has intel oneAPI then instead of module load you should source the 
+path to those modules.
+
+```
+source /path/to/intel/API/setvars.sh
+``` 
+
+If you do not have intel Fortran compiler you can install them by 
+first downloading it from 
+https://registrationcenter-download.intel.com/akdlm/IRC_NAS/150e0430-63df-48a0-8469-ecebff0a1858/l_fortran-compiler_p_2023.1.0.46348.sh
+either using your browser or wget command
+```
+wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/150e0430-63df-48a0-8469-ecebff0a1858/l_fortran-compiler_p_2023.1.0.46348.sh
+```
+
+Then run it after making it an executable and follow the on-screen instructions.
+
+```
+chmod 755 l_fortran-compiler_p_2023.1.0.46348.sh
+./l_fortran-compiler_p_2023.1.0.46348.sh
+```
+
+After installing it you can load it to the environment using
+```
+source /installation/path/setvars.sh
+```
+
+###LGCMC installation
+
+After loading/obtaining intel fortran compiler, install LGCMC as following
+
+```
+$git clone git@github.com:arpank-2380/LGCMC.git
+$cd LGCMC
+$./install.sh
+```
+
+After a successful installation you would see a message saying installation is successful with the location of the executable: lgcmc.x.
+
+## Tutorials & Manual
+Comming Soon
 
 Manual is comming soon.

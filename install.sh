@@ -7,6 +7,18 @@ cd ${root_dir}/source
    make clean
    make all
 
+if [[ -f lgcmc.x ]]; then
+   echo "----------------------------------------------------------------------"
+   echo "  Hurrah! LGCMC Installation SUCCESSFUL!  "
+   echo "  The executable is:      " 
+   echo "  ${root_dir}/bin/lgcmc.x "       
+   echo "----------------------------------------------------------------------"
+else
+   echo "----------------------------------------------------------------------"
+   echo "     Alas! LGCMC Installation FAILED!     "
+   echo "----------------------------------------------------------------------"   
+fi
+
 if [[ -d ${binary_location} ]]; then
     mv lgcmc.x ${binary_location}
 else

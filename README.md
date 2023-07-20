@@ -91,35 +91,35 @@ the following references:
 [C1] Kundu, A; Sillar, K; Sauer, J. 
 *Ab Initio* Prediction of Adsorption Isotherms for Gas Mixtures 
 by Grand Canonical Monte Carlo Simulations on a Lattice of Sites. 
-*J. Phys. Chem. Lett.* **2017**, 8, 2713. 
+[*J. Phys. Chem. Lett.* **2017**, 8, 2713.](https://doi.org/10.1021/acs.jpclett.7b01205) 
 
 [C2] Kundu, A. 
 *Ab Initio* Prediction of Isotherms for Pure and Mixed Gas Adsorption in 
 Metal-Organic Frameworks.
-Humboldt-Universitat zu Berlin, Berlin, 2018.
-[DOI: 10.13140/RG.2.2.16512.58882]
+[Humboldt-Universitat zu Berlin, Berlin, 2018.](http://dx.doi.org/10.13140/RG.2.2.16512.58882)
+
  
 
 ### References
 [R1] Kundu, A; Piccini, G; Sillar, K; Sauer, J.
 *Ab Initio* Prediction of Adsorption Isotherms for Small Molecules in 
 Metal-Organic Frameworks.
-*J. Am. Chem. Soc.* **2016**, 138, 14047.
+[*J. Am. Chem. Soc.* **2016**, 138, 14047.](https://doi.org/10.1021/jacs.6b08646)
 
 [R2] Sillar, K; Kundu, A; Sauer, J.
 *Ab Initio* Adsorption Isotherms for Molecules with Lateral Interactions: 
 CO2 in Metal–Organic Frameworks.
-*J. Phys. Chem. C* **2017**, 121, 12789
+[*J. Phys. Chem. C* **2017**, 121, 12789.](https://doi.org/10.1021/acs.jpcc.7b02806)
 
 [R3] Kundu, A; Sillar, K; Sauer, J.
 Predicting adsorption selectivities from pure gas isotherms for 
 gas mixtures in metal–organic frameworks.
-*Chem. Sci.* **2020**, 11, 643 (Featured in Front Cover).
+[*Chem. Sci.* **2020**, 11, 643](https://doi.org/10.1039/C9SC03008E) (Featured in Front Cover).
 
 [R4]Sillar, K; Kundu, A; Sauer, J.
 Ab Initio Prediction of Adsorption Selectivities for Binary Gas Mixtures on a
 Heterogeneous Metal-Organic Framework Surface.
-*Submitted* **2023**.
+[*J. Phys. Chem. C* **2023**, 127, 13317.](https://doi.org/10.1021/acs.jpcc.3c02494)
 
 ## Installation
 **Requirements:** Intel fortran compiler.
